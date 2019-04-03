@@ -5,8 +5,235 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>弹出层插件</title>
+    <style>
+        /* 第一种弹出层 */
+        .actions{
+            width: 600px;
+            height: 600px;
+            background-color: #ccc;
+            margin: 100px 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        a.button{
+            width: 100px;
+            height: 50px;
+            background-color: #f44336;
+            border: none;
+            color:#fff;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 10px;
+            text-decoration: none;
+            line-height: 50px;
+            transition: .25s;
+        }
+        /* 弹出层 */
+        .pop{
+            width: 600px;
+            height: 600px;
+            margin: 100px 100px;
+            position:fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            transition: opacity .5s;
+            -webkit-transition: opacity .5s;
+            visibility: hidden;
+            opacity: 0;
+        }
+        .pop:target{
+            visibility: visible;
+            opacity: 1;
+        }
+        .pop_wrap{
+            width: 50%;
+            position: relative;
+            margin: auto;
+            padding: 1.5rem;
+            background-color: #fff;
+            border-radius: 4px;
+            -webkit-border-radius:4px;
+            -moz-border-radius:4px;
+            transition: .5s;
+            opacity: 0;
+        }
+        .pop_wrap .content{
+            margin-top: 1rem
+        }
+        .pop_wrap .content a{
+            max-width: 60%;
+            height: 30px;
+            margin: 0 auto;
+            display: block;
+            line-height: 30px;
+            margin-top: 20px;
+        }
+        .pop:target > .pop_wrap{
+            transform: translateY(30%) scale(0.9); /* scale() 方法缩放当前绘图至更大或更小。 */
+            -webkit-transform:  translateY(30%) scale(0.9);
+            -moz-transform:  translateY(30%) scale(0.9);
+            -webkit-transition-timing-function: cubic-bezier(0.8,0,0,1.5);
+            transition-timing-function: cubic-bezier(0.8,0,0,1.5);/*转场效果 */
+            opacity: 1;
+        }
+        h2{
+            margin-top: 2rem;
+            text-align: center;
+        }
+        a.close{
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 22px;
+            height: 22px;
+            text-decoration: none;
+            text-align: center;
+            font-size: 20px;
+            line-height: 21px;
+            color: lightslategrey;
+            background-color: lightgrey;
+            border-radius: 50%;
+            -webkit-border-radius:50%;
+            -moz-border-radius:50%;
+            transition: .25s;
+        }
+        a.close:hover{
+            background-color: #f44336;
+            color: white;
+        }
+        
+        /* 第二种弹出层 */
+        .actions1{
+            width: 600px;
+            height: 600px;
+            background-color: #ccc;
+            margin: 100px 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 50%;
+        }
+        .modal{
+            position: fixed;
+            top: 250px;
+            left: 58%;
+            width: 500px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            -webkit-transition: 1.1s ease-out;
+            transition: 1.1s ease-out;
+            box-shadow: -2rem 2rem 2rem rgba(0, 0, 0, 0.2);
+            -webkit-filter: blur(0);
+            filter: blur(0);
+            -webkit-transform: scale(1);
+            transform: scale(1);
+            opacity: 1;
+            visibility: visible;
+        
+        }
+        .modal.off{
+            opacity: 0;
+            visibility: hidden;
+            -webkit-filter: blur(8px);
+            filter: blur(8px);
+            -webkit-transform: scale(0.33);
+            transform: scale(0.33);
+            box-shadow: 1rem 0 0 rgba(0, 0, 0, 0.2);
+        }
+        @supports (offset-rotation: 0deg) {
+            .modal{
+                offset-rotation: 0deg;
+                offset-path:path("M 250,100 s -300,500 -700,-200");
+            }
+            .modal.off{
+                offset-distance:100%;
+            }
+        }
+        @media (prefers-reduced-motion){
+            @supports(offset-rotation:0deg){
+                .modal{
+                    offset-path:none;
+                }
+            }
+        }
+        .modal h2{
+            border-bottom: 1px solid #ccc;
+            padding: 1rem;
+            margin:0;
+        }
+        .modal .content{
+            padding: 1rem;
+        }
+        .modal .toggle-button{
+            border-top: 1px solid #ccc;
+            background-color: #eee;
+            padding: 0.5rem 1rem;
+        }
+        .modal .toggle-button button{
+            border: 0;
+            background: #78f89f;
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            line-height: 1;
+        }
+        .container1 .button{
+            position: absolute;
+        }
+    </style>
 </head>
 <body>
-    
+    <!-- 纯CSS弹出框 -->
+    <div class="container">
+        <div class="actions">
+            <a href="#pop" class="button">Click!</a>
+        </div>
+    </div>
+    <div id="pop" class="pop">
+        <div class="pop_wrap">
+            <h2>弹出层</h2>
+            <a href="#" class="close"></a>
+            <div class="content">
+                ES6 中的基本数据类型是：<br>
+                Number、String、Null、Undefined、Symbol、Boolean <br>
+                用typeof可以检测出变量的基本数据类型，但是有个特例，就是null的typeof返回的是object，这是个javascript的历史bug。。。<br>
+                <a href="#" class="button">close</a>
+            </div>   
+        </div>   
+    </div>
+
+    <!-- 渐变弹出框 -->
+    <div class="container1">
+        <div class="actions1">
+            <a href="#" class="button">Click!</a>
+        </div>
+    </div>
+    <div class="modal" id="modal">
+        <h2>弹出层</h2>
+        <div class="content">
+            ES6 中的基本数据类型是：<br>
+            Number、String、Null、Undefined、Symbol、Boolean <br>
+            用typeof可以检测出变量的基本数据类型，但是有个特例，就是null的typeof返回的是object，这是个javascript的历史bug。。。<br>
+        </div>   
+        <div class="toggle-button">
+            <button class="button">OK</button>
+        </div>
+    </div>
+    <script>
+        var buttons = document.querySelectorAll(".button");
+        var modal = document.querySelector("#modal");
+        [].forEach.call(buttons,function(button){
+            button.addEventListener("click",function(){
+                modal.classList.toggle("off");
+            })
+        })
+    </script>
 </body>
 </html>
